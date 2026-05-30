@@ -2,7 +2,7 @@
 @section('title', 'Sauvegardes')
 
 @section('actions')
-    <form method="POST" action="{{ route('admin.backups.store') }}" class="d-inline">
+    <form method="POST" action="{{ route('admin.backups.create') }}" class="d-inline">
         @csrf
         <button type="submit" class="btn btn-vp" onclick="return confirm('Creer une nouvelle sauvegarde ?')">
             <i class="bi bi-plus-circle me-1"></i> Creer une sauvegarde
