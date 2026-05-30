@@ -111,7 +111,7 @@ class PublicController extends Controller
         }
         RateLimiter::hit($key, 3600);
 
-        ContactMessage::create([
+        $msg = ContactMessage::create([
             'name' => $request->name,
             'email' => $request->email,
             'phone' => $request->phone,
@@ -119,6 +119,27 @@ class PublicController extends Controller
             'message' => $request->message,
             'ip_address' => $request->ip(),
         ]);
+
+        $adminEmail = Setting::get('email');
+        if ($adminEmail) {
+            try {
+                Mail::raw(
+                    "Nouveau message de contact:\n\n" .
+                    "Nom: {$msg->name}\n" .
+                    "Email: {$msg->email}\n" .
+                    "Telephone: " . ($msg->phone ?? '—') . "\n" .
+                    "Sujet: " . ($msg->subject ?? '—') . "\n\n" .
+                    "Message:\n{$msg->message}",
+                    function ($mail) use ($adminEmail, $msg) {
+                        $mail->to($adminEmail)
+                             ->subject('Nouveau message - ' . ($msg->subject ?? 'Contact'))
+                             ->replyTo($msg->email, $msg->name);
+                    }
+                );
+            } catch (\Exception $e) {
+                // Email delivery failed but message is saved in database
+            }
+        }
 
         return back()->with('success', 'Votre message a été envoyé avec succès. Nous vous répondrons dans les plus brefs délais.');
     }

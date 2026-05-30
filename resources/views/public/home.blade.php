@@ -34,7 +34,7 @@
     </section>
 
     {{-- ── Services ── --}}
-    <section id="services">
+    <section id="services" style="background:linear-gradient(rgba(255,255,255,0.92),rgba(255,255,255,0.92)),url('https://images.unsplash.com/photo-1541888946425-d81bb19240f5?auto=format&fit=crop&w=1800&q=80');background-size:cover;background-position:center;background-attachment:fixed;">
         <div class="section-title">
             <h2>Nos Services</h2>
             <p>Des prestations completes pour vos projets VRD, batiment et espaces verts.</p>
