@@ -12,9 +12,9 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     <style>
         :root {
-            --vp-green: #2d6a4f;
-            --vp-green-light: #40916c;
-            --vp-green-dark: #1b4332;
+            --vp-green: #0E7A32;
+            --vp-green-light: #39A845;
+            --vp-green-dark: #0b5e25;
             --vp-gold: #d4a853;
             --vp-gold-light: #e8c47a;
             --vp-bg: #f9fafb;
