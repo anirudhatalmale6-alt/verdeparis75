@@ -48,6 +48,15 @@ class SettingsController extends Controller
                 'footer_copyright' => ['label' => 'Copyright', 'type' => 'text'],
             ],
         ],
+        'visitor_widget' => [
+            'label' => 'Widget Visiteurs',
+            'fields' => [
+                'visitor_widget_enabled' => ['label' => 'Activer le widget visiteurs', 'type' => 'checkbox'],
+                'visitor_widget_text' => ['label' => 'Texte du widget', 'type' => 'text'],
+                'visitor_widget_color' => ['label' => 'Couleur principale (hex)', 'type' => 'text'],
+                'visitor_widget_position' => ['label' => 'Position', 'type' => 'text'],
+            ],
+        ],
     ];
 
     /**
@@ -98,8 +107,21 @@ class SettingsController extends Controller
 
                         $updatedKeys[] = $fieldKey;
                     }
+                } elseif ($fieldConfig['type'] === 'checkbox') {
+                    $value = $request->has("settings.{$fieldKey}") ? '1' : '0';
+
+                    Setting::updateOrCreate(
+                        ['key' => $fieldKey],
+                        [
+                            'value' => $value,
+                            'type' => 'checkbox',
+                            'group' => $groupKey,
+                            'label' => $fieldConfig['label'],
+                        ]
+                    );
+
+                    $updatedKeys[] = $fieldKey;
                 } else {
-                    // Handle text/textarea fields
                     $value = $request->input("settings.{$fieldKey}");
 
                     Setting::updateOrCreate(

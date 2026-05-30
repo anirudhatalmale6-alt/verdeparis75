@@ -25,7 +25,7 @@
                     <tr>
                         <td>
                             @if($service->image)
-                                <img src="{{ asset('storage/uploads/services/' . $service->image) }}" class="img-thumb" alt="{{ $service->title }}">
+                                <img src="{{ asset('storage/' . $service->image) }}" class="img-thumb" alt="{{ $service->title }}">
                             @else
                                 <span class="text-muted"><i class="bi bi-image" style="font-size:1.5rem;"></i></span>
                             @endif

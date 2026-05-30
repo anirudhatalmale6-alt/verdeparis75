@@ -12,11 +12,16 @@ Route::middleware('track.visits')->group(function () {
     Route::get('/realisations/{slug}', [PublicController::class, 'projectShow'])->name('projects.show');
     Route::get('/avant-apres', [PublicController::class, 'beforeAfter'])->name('before-after');
     Route::get('/galerie', [PublicController::class, 'gallery'])->name('gallery');
+    Route::post('/galerie/{photo}/like', [PublicController::class, 'photoLike'])->name('gallery.like');
+    Route::post('/galerie/{photo}/view', [PublicController::class, 'photoView'])->name('gallery.view');
     Route::get('/videos', [PublicController::class, 'videos'])->name('videos');
+    Route::post('/videos/{video}/like', [PublicController::class, 'videoLike'])->name('videos.like');
+    Route::post('/videos/{video}/view', [PublicController::class, 'videoView'])->name('videos.view');
     Route::get('/partenaires', [PublicController::class, 'partners'])->name('partners');
     Route::get('/contact', [PublicController::class, 'contact'])->name('contact');
     Route::post('/contact', [PublicController::class, 'contactSubmit'])->name('contact.submit');
     Route::get('/page/{slug}', [PublicController::class, 'legalPage'])->name('legal');
+    Route::get('/api/visitor-stats', [PublicController::class, 'visitorStats'])->name('visitor.stats');
 });
 
 // Auth routes

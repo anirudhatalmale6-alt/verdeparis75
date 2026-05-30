@@ -35,14 +35,16 @@ class PhotoController extends Controller
     {
         $validated = $request->validate([
             'title' => 'required|string|max:255',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:10240',
             'category' => 'nullable|string|max:100',
             'description' => 'nullable|string',
             'sort_order' => 'nullable|integer',
             'is_active' => 'nullable|boolean',
+            'is_featured' => 'nullable|boolean',
         ]);
 
         $validated['is_active'] = $request->boolean('is_active');
+        $validated['is_featured'] = $request->boolean('is_featured');
 
         if ($request->hasFile('image')) {
             $file = $request->file('image');
@@ -116,14 +118,16 @@ class PhotoController extends Controller
     {
         $validated = $request->validate([
             'title' => 'required|string|max:255',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:10240',
             'category' => 'nullable|string|max:100',
             'description' => 'nullable|string',
             'sort_order' => 'nullable|integer',
             'is_active' => 'nullable|boolean',
+            'is_featured' => 'nullable|boolean',
         ]);
 
         $validated['is_active'] = $request->boolean('is_active');
+        $validated['is_featured'] = $request->boolean('is_featured');
 
         if ($request->hasFile('image')) {
             // Delete old image

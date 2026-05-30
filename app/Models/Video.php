@@ -16,6 +16,9 @@ class Video extends Model
         'video_type',
         'thumbnail',
         'category',
+        'views',
+        'likes',
+        'is_featured',
         'sort_order',
         'is_active',
     ];
@@ -24,7 +27,10 @@ class Video extends Model
     {
         return [
             'is_active' => 'boolean',
+            'is_featured' => 'boolean',
             'sort_order' => 'integer',
+            'views' => 'integer',
+            'likes' => 'integer',
         ];
     }
 
@@ -86,5 +92,10 @@ class Video extends Model
     public function scopeOrdered($query)
     {
         return $query->orderBy('sort_order');
+    }
+
+    public function scopeFeatured($query)
+    {
+        return $query->where('is_featured', true);
     }
 }

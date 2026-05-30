@@ -16,6 +16,11 @@
         </div>
     </section>
 
+    {{-- ── Visitor Widget (after hero) ── --}}
+    @if(Setting::get('visitor_widget_enabled', '1') && Setting::get('visitor_widget_position', 'after_hero') === 'after_hero')
+        @include('public.partials.visitor-widget')
+    @endif
+
     {{-- ── About ── --}}
     <section>
         <div class="about-grid">
@@ -205,13 +210,12 @@
     </section>
     @endif
 
-    {{-- ── Partners ── --}}
+    {{-- ── Partners (hidden until real partners are added) ── --}}
+    @if($partners->count() > 1)
     <section class="bg-white">
         <div class="section-title">
             <h2>Nos Partenaires</h2>
-            <p>Logos modifiables depuis l'admin.</p>
         </div>
-        @if($partners->count())
         <div class="partners-grid">
             @foreach($partners as $p)
             <div class="partner">
@@ -225,16 +229,8 @@
             </div>
             @endforeach
         </div>
-        @else
-        <div class="partners-grid">
-            <div class="partner">PARTENAIRE</div>
-            <div class="partner">PARTENAIRE</div>
-            <div class="partner">PARTENAIRE</div>
-            <div class="partner">PARTENAIRE</div>
-            <div class="partner">PARTENAIRE</div>
-        </div>
-        @endif
     </section>
+    @endif
 
     {{-- ── Contact (dark section) ── --}}
     <section class="bg-dark" id="contact">
@@ -265,23 +261,10 @@
         </div>
     </section>
 
-    {{-- ── Visitor Counters ── --}}
-    <section style="background:#0b5e25;color:white;padding:50px 24px;">
-        <div style="max-width:900px;margin:auto;display:grid;grid-template-columns:repeat(3,1fr);gap:24px;text-align:center;">
-            <div class="stat">
-                <strong>{{ number_format($totalVisitors ?? 0) }}</strong>
-                <span><i class="bi bi-people" style="margin-right:5px;"></i> Visiteurs</span>
-            </div>
-            <div class="stat">
-                <strong>{{ number_format($totalPageViews ?? 0) }}</strong>
-                <span><i class="bi bi-eye" style="margin-right:5px;"></i> Pages vues</span>
-            </div>
-            <div class="stat">
-                <strong>{{ $onlineNow ?? 0 }}</strong>
-                <span><i class="bi bi-circle-fill" style="color:#39A845;margin-right:5px;font-size:10px;"></i> En ligne</span>
-            </div>
-        </div>
-    </section>
+    {{-- ── Visitor Widget (before footer position) ── --}}
+    @if(Setting::get('visitor_widget_enabled', '1') && Setting::get('visitor_widget_position') === 'before_footer')
+        @include('public.partials.visitor-widget')
+    @endif
 
     {{-- ── CTA ── --}}
     <section class="cta-section">

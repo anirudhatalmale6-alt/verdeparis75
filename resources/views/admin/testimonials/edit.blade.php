@@ -38,7 +38,7 @@
                     <label for="image" class="form-label">Photo du client</label>
                     @if($testimonial->image)
                         <div class="mb-2">
-                            <img src="{{ asset('storage/uploads/testimonials/' . $testimonial->image) }}" class="img-thumb" alt="{{ $testimonial->client_name }}">
+                            <img src="{{ asset('storage/' . $testimonial->image) }}" class="img-thumb" alt="{{ $testimonial->client_name }}">
                         </div>
                         <small class="text-muted d-block mb-1">Laisser vide pour garder l'image actuelle</small>
                     @endif

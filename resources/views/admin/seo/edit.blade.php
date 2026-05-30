@@ -49,7 +49,7 @@
                 <label for="og_image" class="form-label">OG Image</label>
                 @if(isset($seo->og_image) && $seo->og_image)
                     <div class="mb-2">
-                        <img src="{{ asset('storage/uploads/seo/' . $seo->og_image) }}" class="img-thumb" alt="OG Image">
+                        <img src="{{ asset('storage/' . $seo->og_image) }}" class="img-thumb" alt="OG Image">
                     </div>
                     <small class="text-muted d-block mb-1">Laisser vide pour garder l'image actuelle</small>
                 @endif

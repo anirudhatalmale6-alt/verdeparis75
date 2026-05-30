@@ -50,7 +50,7 @@
                 <label for="cover_image" class="form-label">Image de couverture</label>
                 @if($project->cover_image)
                     <div class="mb-2">
-                        <img src="{{ asset('storage/uploads/projects/' . $project->cover_image) }}" class="img-thumb" alt="{{ $project->title }}">
+                        <img src="{{ asset('storage/' . $project->cover_image) }}" class="img-thumb" alt="{{ $project->title }}">
                     </div>
                     <small class="text-muted d-block mb-1">Laisser vide pour garder l'image actuelle</small>
                 @endif
@@ -100,7 +100,7 @@
                 @foreach($project->images as $image)
                     <div class="col-6 col-md-3">
                         <div class="position-relative">
-                            <img src="{{ asset('storage/uploads/projects/gallery/' . $image->filename) }}" class="img-fluid rounded" alt="{{ $image->title ?? '' }}" style="width:100%; height:150px; object-fit:cover;">
+                            <img src="{{ asset('storage/' . $image->image) }}" class="img-fluid rounded" alt="{{ $image->title ?? '' }}" style="width:100%; height:150px; object-fit:cover;">
                             <form method="POST" action="{{ route('admin.projects.images.destroy', [$project, $image]) }}" class="position-absolute top-0 end-0 m-1" onsubmit="return confirm('Supprimer cette image ?')">
                                 @csrf
                                 @method('DELETE')

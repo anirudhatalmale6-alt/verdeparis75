@@ -13,7 +13,7 @@
         <div class="col-6 col-md-4 col-lg-3">
             <div class="card h-100">
                 @if($photo->image)
-                    <img src="{{ asset('storage/uploads/photos/' . $photo->image) }}" class="card-img-top" alt="{{ $photo->title }}" style="height:180px; object-fit:cover;">
+                    <img src="{{ asset('storage/' . $photo->image) }}" class="card-img-top" alt="{{ $photo->title }}" style="height:180px; object-fit:cover;">
                 @else
                     <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height:180px;">
                         <i class="bi bi-image text-muted" style="font-size:3rem;"></i>
@@ -24,13 +24,22 @@
                     @if($photo->category)
                         <span class="badge badge-vp" style="font-size:.7rem;">{{ $photo->category }}</span>
                     @endif
+                    <div class="mt-1" style="font-size:.75rem;color:#666;">
+                        <i class="bi bi-eye"></i> {{ $photo->views ?? 0 }}
+                        <i class="bi bi-heart-fill ms-2"></i> {{ $photo->likes ?? 0 }}
+                    </div>
                 </div>
                 <div class="card-footer bg-transparent border-0 p-2 d-flex justify-content-between align-items-center">
-                    @if($photo->is_active)
-                        <span class="badge bg-success" style="font-size:.65rem;">Actif</span>
-                    @else
-                        <span class="badge bg-secondary" style="font-size:.65rem;">Inactif</span>
-                    @endif
+                    <div>
+                        @if($photo->is_active)
+                            <span class="badge bg-success" style="font-size:.65rem;">Actif</span>
+                        @else
+                            <span class="badge bg-secondary" style="font-size:.65rem;">Inactif</span>
+                        @endif
+                        @if($photo->is_featured)
+                            <span class="badge bg-warning text-dark" style="font-size:.65rem;">Vedette</span>
+                        @endif
+                    </div>
                     <div>
                         <a href="{{ route('admin.photos.edit', $photo) }}" class="btn btn-sm btn-vp-outline" title="Modifier">
                             <i class="bi bi-pencil"></i>

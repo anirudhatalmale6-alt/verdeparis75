@@ -32,7 +32,7 @@
                 <label for="image" class="form-label">Image</label>
                 @if($service->image)
                     <div class="mb-2">
-                        <img src="{{ asset('storage/uploads/services/' . $service->image) }}" class="img-thumb" alt="{{ $service->title }}">
+                        <img src="{{ asset('storage/' . $service->image) }}" class="img-thumb" alt="{{ $service->title }}">
                     </div>
                     <small class="text-muted d-block mb-1">Laisser vide pour garder l'image actuelle</small>
                 @endif

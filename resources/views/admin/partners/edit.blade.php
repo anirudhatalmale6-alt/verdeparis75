@@ -17,7 +17,7 @@
                 <label for="logo" class="form-label">Logo</label>
                 @if($partner->logo)
                     <div class="mb-2">
-                        <img src="{{ asset('storage/uploads/partners/' . $partner->logo) }}" class="img-thumb" alt="{{ $partner->name }}">
+                        <img src="{{ asset('storage/' . $partner->logo) }}" class="img-thumb" alt="{{ $partner->name }}">
                     </div>
                     <small class="text-muted d-block mb-1">Laisser vide pour garder l'image actuelle</small>
                 @endif

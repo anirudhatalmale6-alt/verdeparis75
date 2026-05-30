@@ -15,6 +15,9 @@ class Photo extends Model
         'thumbnail',
         'category',
         'description',
+        'views',
+        'likes',
+        'is_featured',
         'sort_order',
         'is_active',
     ];
@@ -23,8 +26,16 @@ class Photo extends Model
     {
         return [
             'is_active' => 'boolean',
+            'is_featured' => 'boolean',
             'sort_order' => 'integer',
+            'views' => 'integer',
+            'likes' => 'integer',
         ];
+    }
+
+    public function scopeFeatured($query)
+    {
+        return $query->where('is_featured', true);
     }
 
     /**

@@ -18,7 +18,7 @@
                         <div class="col-6 text-center">
                             <small class="text-muted d-block mb-1">Avant</small>
                             @if($item->before_image)
-                                <img src="{{ asset('storage/uploads/before-after/' . $item->before_image) }}" class="img-fluid rounded" alt="Avant" style="height:120px; width:100%; object-fit:cover;">
+                                <img src="{{ asset('storage/' . $item->before_image) }}" class="img-fluid rounded" alt="Avant" style="height:120px; width:100%; object-fit:cover;">
                             @else
                                 <div class="bg-light rounded d-flex align-items-center justify-content-center" style="height:120px;">
                                     <i class="bi bi-image text-muted" style="font-size:2rem;"></i>
@@ -28,7 +28,7 @@
                         <div class="col-6 text-center">
                             <small class="text-muted d-block mb-1">Apres</small>
                             @if($item->after_image)
-                                <img src="{{ asset('storage/uploads/before-after/' . $item->after_image) }}" class="img-fluid rounded" alt="Apres" style="height:120px; width:100%; object-fit:cover;">
+                                <img src="{{ asset('storage/' . $item->after_image) }}" class="img-fluid rounded" alt="Apres" style="height:120px; width:100%; object-fit:cover;">
                             @else
                                 <div class="bg-light rounded d-flex align-items-center justify-content-center" style="height:120px;">
                                     <i class="bi bi-image text-muted" style="font-size:2rem;"></i>

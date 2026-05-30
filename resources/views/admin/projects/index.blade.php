@@ -26,7 +26,7 @@
                     <tr>
                         <td>
                             @if($project->cover_image)
-                                <img src="{{ asset('storage/uploads/projects/' . $project->cover_image) }}" class="img-thumb" alt="{{ $project->title }}">
+                                <img src="{{ asset('storage/' . $project->cover_image) }}" class="img-thumb" alt="{{ $project->title }}">
                             @else
                                 <span class="text-muted"><i class="bi bi-image" style="font-size:1.5rem;"></i></span>
                             @endif

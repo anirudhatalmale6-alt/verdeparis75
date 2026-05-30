@@ -33,7 +33,7 @@
                 <label for="image" class="form-label">Image</label>
                 @if(isset($section->image) && $section->image)
                     <div class="mb-2">
-                        <img src="{{ asset('storage/uploads/homepage/' . $section->image) }}" class="img-thumb" alt="Image de section">
+                        <img src="{{ asset('storage/' . $section->image) }}" class="img-thumb" alt="Image de section">
                     </div>
                     <small class="text-muted d-block mb-1">Laisser vide pour garder l'image actuelle</small>
                 @endif

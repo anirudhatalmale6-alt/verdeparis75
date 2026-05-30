@@ -23,7 +23,7 @@
                     <label for="before_image" class="form-label">Image Avant</label>
                     @if($item->before_image)
                         <div class="mb-2">
-                            <img src="{{ asset('storage/uploads/before-after/' . $item->before_image) }}" class="img-thumb" alt="Avant">
+                            <img src="{{ asset('storage/' . $item->before_image) }}" class="img-thumb" alt="Avant">
                         </div>
                         <small class="text-muted d-block mb-1">Laisser vide pour garder l'image actuelle</small>
                     @endif
@@ -33,7 +33,7 @@
                     <label for="after_image" class="form-label">Image Apres</label>
                     @if($item->after_image)
                         <div class="mb-2">
-                            <img src="{{ asset('storage/uploads/before-after/' . $item->after_image) }}" class="img-thumb" alt="Apres">
+                            <img src="{{ asset('storage/' . $item->after_image) }}" class="img-thumb" alt="Apres">
                         </div>
                         <small class="text-muted d-block mb-1">Laisser vide pour garder l'image actuelle</small>
                     @endif

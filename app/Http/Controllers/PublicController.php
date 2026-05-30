@@ -71,17 +71,86 @@ class PublicController extends Controller
         return view('public.before-after', compact('items'));
     }
 
-    public function gallery()
+    public function gallery(Request $request)
     {
-        $photos = Photo::active()->ordered()->paginate(24);
+        $sort = $request->get('sort', 'recent');
+        $category = $request->get('category');
+
+        $query = Photo::active();
+
+        if ($category) {
+            $query->where('category', $category);
+        }
+
+        $query = match ($sort) {
+            'views' => $query->orderByDesc('views'),
+            'likes' => $query->orderByDesc('likes'),
+            'featured' => $query->where('is_featured', true)->ordered(),
+            default => $query->orderByDesc('created_at'),
+        };
+
+        $photos = $query->paginate(24)->appends($request->query());
+        $featured = Photo::active()->featured()->orderByDesc('views')->take(3)->get();
         $categories = Photo::active()->whereNotNull('category')->distinct()->pluck('category');
-        return view('public.gallery', compact('photos', 'categories'));
+
+        return view('public.gallery', compact('photos', 'featured', 'categories', 'sort', 'category'));
     }
 
-    public function videos()
+    public function photoLike(Photo $photo)
     {
-        $videos = Video::active()->ordered()->paginate(12);
-        return view('public.videos', compact('videos'));
+        $key = 'photo-like:' . request()->ip() . ':' . $photo->id;
+        if (!RateLimiter::tooManyAttempts($key, 1)) {
+            $photo->increment('likes');
+            RateLimiter::hit($key, 86400);
+        }
+        return response()->json(['likes' => $photo->fresh()->likes]);
+    }
+
+    public function photoView(Photo $photo)
+    {
+        $photo->increment('views');
+        return response()->json(['views' => $photo->views + 1]);
+    }
+
+    public function videos(Request $request)
+    {
+        $sort = $request->get('sort', 'recent');
+        $category = $request->get('category');
+
+        $query = Video::active();
+
+        if ($category) {
+            $query->where('category', $category);
+        }
+
+        $query = match ($sort) {
+            'views' => $query->orderByDesc('views'),
+            'likes' => $query->orderByDesc('likes'),
+            'featured' => $query->where('is_featured', true)->ordered(),
+            default => $query->orderByDesc('created_at'),
+        };
+
+        $videos = $query->paginate(12)->appends($request->query());
+        $featured = Video::active()->featured()->orderByDesc('views')->take(3)->get();
+        $categories = Video::active()->whereNotNull('category')->distinct()->pluck('category');
+
+        return view('public.videos', compact('videos', 'featured', 'categories', 'sort', 'category'));
+    }
+
+    public function videoLike(Video $video)
+    {
+        $key = 'video-like:' . request()->ip() . ':' . $video->id;
+        if (!RateLimiter::tooManyAttempts($key, 1)) {
+            $video->increment('likes');
+            RateLimiter::hit($key, 86400);
+        }
+        return response()->json(['likes' => $video->fresh()->likes]);
+    }
+
+    public function videoView(Video $video)
+    {
+        $video->increment('views');
+        return response()->json(['views' => $video->views + 1]);
     }
 
     public function partners()
@@ -148,5 +217,46 @@ class PublicController extends Controller
     {
         $page = LegalPage::where('slug', $slug)->where('is_active', true)->firstOrFail();
         return view('public.legal', compact('page'));
+    }
+
+    public function visitorStats()
+    {
+        $now = now();
+
+        $onlineNow = PageVisit::where('created_at', '>=', $now->copy()->subMinutes(5))
+            ->distinct('ip_address')
+            ->count('ip_address');
+
+        $visitorsToday = PageVisit::whereDate('created_at', $now->toDateString())
+            ->distinct('ip_address')
+            ->count('ip_address');
+
+        $pageViewsToday = PageVisit::whereDate('created_at', $now->toDateString())->count();
+
+        $visitorsMonth = PageVisit::where('created_at', '>=', $now->copy()->startOfMonth())
+            ->distinct('ip_address')
+            ->count('ip_address');
+
+        $topPages = PageVisit::select(
+                'page_url',
+                \Illuminate\Support\Facades\DB::raw('COUNT(*) as visits')
+            )
+            ->where('created_at', '>=', $now->copy()->subDays(7))
+            ->groupBy('page_url')
+            ->orderByDesc('visits')
+            ->take(5)
+            ->get()
+            ->map(fn($p) => [
+                'page' => '/' . ($p->page_url ?: ''),
+                'visits' => $p->visits,
+            ]);
+
+        return response()->json([
+            'online' => $onlineNow,
+            'visitors_today' => $visitorsToday,
+            'pageviews_today' => $pageViewsToday,
+            'visitors_month' => $visitorsMonth,
+            'top_pages' => $topPages,
+        ]);
     }
 }

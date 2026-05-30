@@ -16,7 +16,8 @@
                     <th>Titre</th>
                     <th>Type</th>
                     <th>Categorie</th>
-                    <th>Actif</th>
+                    <th>Vues / Likes</th>
+                    <th>Statut</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -29,10 +30,17 @@
                         </td>
                         <td>{{ $video->category ?? '—' }}</td>
                         <td>
+                            <i class="bi bi-eye"></i> {{ $video->views ?? 0 }}
+                            <i class="bi bi-heart-fill ms-2"></i> {{ $video->likes ?? 0 }}
+                        </td>
+                        <td>
                             @if($video->is_active)
                                 <span class="badge bg-success">Actif</span>
                             @else
                                 <span class="badge bg-secondary">Inactif</span>
+                            @endif
+                            @if($video->is_featured)
+                                <span class="badge bg-warning text-dark">Vedette</span>
                             @endif
                         </td>
                         <td>
@@ -50,7 +58,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="5" class="text-center text-muted py-4">Aucune video enregistree</td>
+                        <td colspan="6" class="text-center text-muted py-4">Aucune video enregistree</td>
                     </tr>
                 @endforelse
             </tbody>
