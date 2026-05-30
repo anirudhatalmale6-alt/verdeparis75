@@ -13,7 +13,9 @@ use App\Models\Service;
 use App\Models\Setting;
 use App\Models\Testimonial;
 use App\Models\Video;
+use App\Models\PageVisit;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\RateLimiter;
 
@@ -27,7 +29,15 @@ class PublicController extends Controller
         $testimonials = Testimonial::active()->ordered()->take(6)->get();
         $partners = Partner::active()->ordered()->get();
 
-        return view('public.home', compact('sections', 'services', 'projects', 'testimonials', 'partners'));
+        $totalVisitors = Cache::remember('total_visitors', 300, function () {
+            return PageVisit::distinct('ip_address')->count('ip_address');
+        });
+        $totalPageViews = Cache::remember('total_pageviews', 300, function () {
+            return PageVisit::count();
+        });
+        $onlineNow = PageVisit::where('created_at', '>=', now()->subMinutes(5))->distinct('ip_address')->count('ip_address');
+
+        return view('public.home', compact('sections', 'services', 'projects', 'testimonials', 'partners', 'totalVisitors', 'totalPageViews', 'onlineNow'));
     }
 
     public function services()
