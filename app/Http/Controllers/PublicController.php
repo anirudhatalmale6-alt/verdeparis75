@@ -5,6 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\BeforeAfter;
 use App\Models\ContactMessage;
 use App\Models\HomepageSection;
+use App\Models\VerdeMessage;
+use App\Models\VerdeMessageSetting;
+use App\Mail\VerdeAdminMessageMail;
+use App\Mail\VerdeClientConfirmationMail;
 use App\Models\LegalPage;
 use App\Models\Partner;
 use App\Models\Photo;
@@ -167,50 +171,80 @@ class PublicController extends Controller
     public function contactSubmit(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:100',
-            'email' => 'required|email|max:100',
-            'phone' => 'nullable|string|max:30',
-            'subject' => 'nullable|string|max:200',
-            'message' => 'required|string|max:5000',
+            'name' => 'required|string|min:2|max:120',
+            'email' => 'required|email|max:180',
+            'phone' => 'nullable|string|max:40',
+            'subject' => 'nullable|string|max:180',
+            'service' => 'nullable|string|max:120',
+            'message' => 'required|string|min:10|max:5000',
+            'website' => 'nullable|size:0',
+            'form_started_at' => 'nullable|integer',
         ]);
 
+        // Honeypot check
+        if (!empty($request->website)) {
+            return back()->with('success', 'Votre message a bien ete envoye.');
+        }
+
+        // Rate limiting
         $key = 'contact-form:' . $request->ip();
         if (RateLimiter::tooManyAttempts($key, 3)) {
-            return back()->with('error', 'Trop de messages envoyés. Veuillez réessayer plus tard.');
+            return back()->with('error', 'Trop de messages envoyes. Veuillez reessayer plus tard.');
         }
         RateLimiter::hit($key, 3600);
 
-        $msg = ContactMessage::create([
+        // Timing anti-spam
+        $minSeconds = (int) VerdeMessageSetting::getValue('min_seconds', 3);
+        if ($request->form_started_at && time() - (int) $request->form_started_at < $minSeconds) {
+            return back()->with('success', 'Votre message a bien ete envoye.');
+        }
+
+        // Bad words check
+        $badWords = ['casino', 'crypto', 'viagra', 'seo backlink'];
+        $text = strtolower(($request->subject ?? '') . ' ' . $request->message);
+        $isSpam = collect($badWords)->contains(fn($word) => str_contains($text, $word));
+
+        $msg = VerdeMessage::create([
             'name' => $request->name,
             'email' => $request->email,
             'phone' => $request->phone,
-            'subject' => $request->subject,
+            'subject' => $request->subject ?? 'Demande via le site',
+            'service' => $request->service,
             'message' => $request->message,
+            'source_page' => url()->previous(),
             'ip_address' => $request->ip(),
+            'user_agent' => substr((string) $request->userAgent(), 0, 250),
+            'is_spam' => $isSpam,
         ]);
 
-        $adminEmail = Setting::get('email');
-        if ($adminEmail) {
-            try {
-                Mail::raw(
-                    "Nouveau message de contact:\n\n" .
-                    "Nom: {$msg->name}\n" .
-                    "Email: {$msg->email}\n" .
-                    "Telephone: " . ($msg->phone ?? '—') . "\n" .
-                    "Sujet: " . ($msg->subject ?? '—') . "\n\n" .
-                    "Message:\n{$msg->message}",
-                    function ($mail) use ($adminEmail, $msg) {
-                        $mail->to($adminEmail)
-                             ->subject('Nouveau message - ' . ($msg->subject ?? 'Contact'))
-                             ->replyTo($msg->email, $msg->name);
-                    }
-                );
-            } catch (\Exception $e) {
-                // Email delivery failed but message is saved in database
+        if (!$isSpam) {
+            $emails = VerdeMessageSetting::redirectEmails();
+            if (!empty($emails)) {
+                $msg->update(['forwarded_to' => $emails]);
+                foreach ($emails as $email) {
+                    try {
+                        Mail::to($email)->send(new VerdeAdminMessageMail($msg));
+                    } catch (\Exception $e) {}
+                }
+            } else {
+                $adminEmail = Setting::get('email');
+                if ($adminEmail) {
+                    try {
+                        Mail::to($adminEmail)->send(new VerdeAdminMessageMail($msg));
+                        $msg->update(['forwarded_to' => [$adminEmail]]);
+                    } catch (\Exception $e) {}
+                }
+            }
+
+            $clientCopy = VerdeMessageSetting::getValue('client_confirmation', '1');
+            if (filter_var($clientCopy, FILTER_VALIDATE_BOOLEAN)) {
+                try {
+                    Mail::to($msg->email)->send(new VerdeClientConfirmationMail($msg));
+                } catch (\Exception $e) {}
             }
         }
 
-        return back()->with('success', 'Votre message a été envoyé avec succès. Nous vous répondrons dans les plus brefs délais.');
+        return back()->with('success', 'Votre message a bien ete envoye. Nous vous repondrons rapidement.');
     }
 
     public function legalPage(string $slug)

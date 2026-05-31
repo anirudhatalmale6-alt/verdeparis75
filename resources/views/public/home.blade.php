@@ -252,6 +252,8 @@
             </div>
             <form method="POST" action="{{ route('contact.submit') }}">
                 @csrf
+                <input type="hidden" name="form_started_at" value="{{ time() }}">
+                <input type="text" name="website" value="" style="display:none" tabindex="-1" autocomplete="off">
                 <input type="text" name="name" placeholder="Nom" required>
                 <input type="tel" name="phone" placeholder="Telephone">
                 <input type="email" name="email" placeholder="Email" required>

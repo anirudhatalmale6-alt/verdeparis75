@@ -7,8 +7,10 @@ use App\Http\Controllers\Admin\BeforeAfterController;
 use App\Http\Controllers\Admin\PhotoController;
 use App\Http\Controllers\Admin\VideoController;
 use App\Http\Controllers\Admin\PartnerController;
-use App\Http\Controllers\Admin\ContactController;
 use App\Http\Controllers\Admin\LegalPageController;
+use App\Http\Controllers\Admin\VerdeMessageController;
+use App\Http\Controllers\Admin\VerdeMessageSettingController;
+use App\Http\Controllers\Admin\VerdeMessageTemplateController;
 use App\Http\Controllers\Admin\SeoController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\HomepageController;
@@ -37,9 +39,23 @@ Route::middleware(['web', 'auth'])->prefix('admin')->name('admin.')->group(funct
     Route::resource('partners', PartnerController::class);
     Route::resource('testimonials', TestimonialController::class);
 
-    Route::get('messages', [ContactController::class, 'index'])->name('messages.index');
-    Route::get('messages/{message}', [ContactController::class, 'show'])->name('messages.show');
-    Route::delete('messages/{message}', [ContactController::class, 'destroy'])->name('messages.destroy');
+    // Messagerie Pro
+    Route::get('messages', [VerdeMessageController::class, 'index'])->name('messages.index');
+    Route::get('messages/{message}', [VerdeMessageController::class, 'show'])->name('messages.show');
+    Route::post('messages/{message}/read', [VerdeMessageController::class, 'markRead'])->name('messages.read');
+    Route::post('messages/{message}/unread', [VerdeMessageController::class, 'markUnread'])->name('messages.unread');
+    Route::post('messages/{message}/archive', [VerdeMessageController::class, 'archive'])->name('messages.archive');
+    Route::post('messages/{message}/restore', [VerdeMessageController::class, 'restore'])->name('messages.restore');
+    Route::delete('messages/{message}', [VerdeMessageController::class, 'destroy'])->name('messages.destroy');
+    Route::post('messages/{message}/reply', [VerdeMessageController::class, 'reply'])->name('messages.reply');
+    Route::post('messages/bulk', [VerdeMessageController::class, 'bulk'])->name('messages.bulk');
+    Route::get('messages-settings', [VerdeMessageSettingController::class, 'edit'])->name('messages.settings');
+    Route::post('messages-settings', [VerdeMessageSettingController::class, 'update'])->name('messages.settings.update');
+    Route::post('messages-settings/test', [VerdeMessageSettingController::class, 'test'])->name('messages.settings.test');
+    Route::get('messages-templates', [VerdeMessageTemplateController::class, 'index'])->name('messages.templates');
+    Route::post('messages-templates', [VerdeMessageTemplateController::class, 'store'])->name('messages.templates.store');
+    Route::put('messages-templates/{template}', [VerdeMessageTemplateController::class, 'update'])->name('messages.templates.update');
+    Route::delete('messages-templates/{template}', [VerdeMessageTemplateController::class, 'destroy'])->name('messages.templates.destroy');
 
     Route::resource('legal-pages', LegalPageController::class);
 

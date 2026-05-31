@@ -126,7 +126,7 @@
             <div class="nav-section-title">Communication</div>
             <a href="{{ route('admin.messages.index') }}" class="nav-link {{ request()->routeIs('admin.messages.*') ? 'active' : '' }}">
                 <i class="bi bi-envelope"></i> Messages
-                @php $unread = \App\Models\ContactMessage::unread()->count(); @endphp
+                @php $unread = \App\Models\VerdeMessage::inbox()->unread()->count(); @endphp
                 @if($unread > 0)
                     <span class="badge bg-danger ms-auto">{{ $unread }}</span>
                 @endif

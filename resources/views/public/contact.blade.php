@@ -16,6 +16,8 @@
                 <h3><i class="bi bi-envelope" style="margin-right:10px;"></i>Envoyez-nous un message</h3>
                 <form action="{{ route('contact.submit') }}" method="POST">
                     @csrf
+                    <input type="hidden" name="form_started_at" value="{{ time() }}">
+                    <input type="text" name="website" value="" style="display:none" tabindex="-1" autocomplete="off">
                     <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;">
                         <div>
                             <label>Nom complet <span class="req">*</span></label>
