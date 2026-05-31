@@ -41,7 +41,7 @@ Route::post('/login', function (\Illuminate\Http\Request $request) {
     }
 
     return back()->withErrors(['email' => 'Identifiants incorrects.'])->onlyInput('email');
-})->middleware('guest');
+})->middleware(['guest', 'throttle:5,1']);
 
 Route::post('/logout', function (\Illuminate\Http\Request $request) {
     \Illuminate\Support\Facades\Auth::logout();
