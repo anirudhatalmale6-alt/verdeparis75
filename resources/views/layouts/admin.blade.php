@@ -138,8 +138,11 @@
             <a href="{{ route('admin.settings.index') }}" class="nav-link {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}">
                 <i class="bi bi-sliders"></i> Parametres
             </a>
-            <a href="{{ route('admin.seo.index') }}" class="nav-link {{ request()->routeIs('admin.seo.*') ? 'active' : '' }}">
+            <a href="{{ route('admin.seo.index') }}" class="nav-link {{ request()->routeIs('admin.seo.*') && !request()->routeIs('admin.seo-pro.*') ? 'active' : '' }}">
                 <i class="bi bi-search"></i> SEO
+            </a>
+            <a href="{{ route('admin.seo-pro.dashboard') }}" class="nav-link {{ request()->routeIs('admin.seo-pro.*') ? 'active' : '' }}">
+                <i class="bi bi-rocket-takeoff"></i> SEO Pro
             </a>
             <a href="{{ route('admin.legal-pages.index') }}" class="nav-link {{ request()->routeIs('admin.legal-pages.*') ? 'active' : '' }}">
                 <i class="bi bi-file-text"></i> Pages Legales

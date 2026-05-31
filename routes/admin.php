@@ -15,6 +15,9 @@ use App\Http\Controllers\Admin\HomepageController;
 use App\Http\Controllers\Admin\AnalyticsController;
 use App\Http\Controllers\Admin\BackupController;
 use App\Http\Controllers\Admin\SecurityController;
+use App\Http\Controllers\Admin\SeoProDashboardController;
+use App\Http\Controllers\Admin\SeoPageAdminController;
+use App\Http\Controllers\Admin\SeoRedirectAdminController;
 use App\Http\Controllers\Admin\TestimonialController;
 use Illuminate\Support\Facades\Route;
 
@@ -59,4 +62,11 @@ Route::middleware(['web', 'auth'])->prefix('admin')->name('admin.')->group(funct
     Route::delete('backups/{backup}', [BackupController::class, 'destroy'])->name('backups.destroy');
 
     Route::get('security', [SecurityController::class, 'index'])->name('security.index');
+
+    // SEO Pro
+    Route::get('seo-pro', [SeoProDashboardController::class, 'index'])->name('seo-pro.dashboard');
+    Route::resource('seo-pro/pages', SeoPageAdminController::class)->names('seo-pro.pages');
+    Route::get('seo-pro/redirects', [SeoRedirectAdminController::class, 'index'])->name('seo-pro.redirects.index');
+    Route::post('seo-pro/redirects', [SeoRedirectAdminController::class, 'store'])->name('seo-pro.redirects.store');
+    Route::delete('seo-pro/redirects/{redirect}', [SeoRedirectAdminController::class, 'destroy'])->name('seo-pro.redirects.destroy');
 });

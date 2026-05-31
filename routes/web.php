@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\PublicController;
+use App\Http\Controllers\Frontend\SeoPageController;
+use App\Http\Controllers\Frontend\SitemapController;
 use Illuminate\Support\Facades\Route;
 
 // Public routes
@@ -52,3 +54,12 @@ Route::post('/logout', function (\Illuminate\Http\Request $request) {
 
 // Admin routes
 require __DIR__ . '/admin.php';
+
+// SEO Pro public routes (sitemap, robots)
+Route::get('/sitemap.xml', [SitemapController::class, 'sitemap'])->name('seo.sitemap');
+Route::get('/robots.txt', [SitemapController::class, 'robots'])->name('seo.robots');
+
+// SEO landing pages (catch-all, must be last)
+Route::middleware('track.visits')->get('/{slug}', [SeoPageController::class, 'show'])
+    ->where('slug', '[a-z0-9\-]+')
+    ->name('seo.page.show');
